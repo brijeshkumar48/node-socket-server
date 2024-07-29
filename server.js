@@ -56,12 +56,19 @@ app.post('/send-message', (req, res) => {
     res.status(200).json({ message: data.message });
 });
 
-app.post('/file-upload-status', (req, res) => {
+app.post('/sapi/file-upload-status', (req, res) => {
     const data = req.body;
     console.log("=====File uploaded successfully========")
     io.emit('fileUploadStatus', data);
     res.status(200).json({ message: 'File upload status updated' });
 });
+
+// app.post('/django-node-communication', (req, res) => {
+//     const data = req.body;
+//     io.emit('sendMessage', data);
+//     io.emit('receiveMessage', { message: data.message });
+//     res.status(200).json({ message: data.message });
+// });
 
 // Start the server using PORT from environment variables
 server.listen(NODE_JS_PORT, '0.0.0.0', () => {
