@@ -19,10 +19,14 @@ const io = socketIo(server, {
 });
 
 // Allow CORS for all origins
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all origins
+    methods: ['GET', 'POST'] // Allow specific methods
+}));
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
+
 
 const userSockets = new Map();
 
@@ -44,16 +48,9 @@ io.on('connection', (socket) => {
     });
 });
 
-// Endpoint to handle events from Django
-app.post('/send-message', (req, res) => {
-    const data = req.body;
-    io.emit('sendMessage', data);
-    io.emit('receiveMessage', { message: data.message });
-    res.status(200).json({ message: data.message });
-});
-
 app.post('/file-upload-status', (req, res) => {
     const data = req.body;
+    console.log("=====File uploaded successfully========")
     io.emit('fileUploadStatus', data);
     res.status(200).json({ message: 'File upload status updated' });
 });
@@ -62,5 +59,3 @@ app.post('/file-upload-status', (req, res) => {
 server.listen(NODE_JS_PORT, '0.0.0.0', () => {
     console.log(`Node.js server is running on port ${NODE_JS_PORT}`);
 });
-
-
