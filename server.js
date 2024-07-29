@@ -20,8 +20,8 @@ const io = socketIo(server, {
 
 // Allow CORS for all origins
 app.use(cors({
-    origin: '*', // Allow all origins
-    methods: ['GET', 'POST'] // Allow specific methods
+    origin: '*',
+    methods: ['GET', 'POST']
 }));
 
 // Middleware to parse JSON bodies
@@ -49,6 +49,24 @@ io.on('connection', (socket) => {
 });
 
 // Endpoint to handle events from Django
+
+// Main socket io api to communicate django-sockectio events======
+
+app.post('/sapi/django-node-communication', (req, res) => {
+    const data = req.body;
+
+    console.log(`=====Trigger Event:====${data.event_name}===`)
+    console.log("Received data:", data)
+
+    const event_name = data.event_name
+    io.emit(event_name, data);
+
+    res.status(200).json({ message: data.message });
+});
+
+
+
+// ==================== Test APIs ================================
 app.post('/send-message', (req, res) => {
     const data = req.body;
     io.emit('sendMessage', data);
@@ -62,13 +80,6 @@ app.post('/sapi/file-upload-status', (req, res) => {
     io.emit('fileUploadStatus', data);
     res.status(200).json({ message: 'File upload status updated' });
 });
-
-// app.post('/django-node-communication', (req, res) => {
-//     const data = req.body;
-//     io.emit('sendMessage', data);
-//     io.emit('receiveMessage', { message: data.message });
-//     res.status(200).json({ message: data.message });
-// });
 
 // Start the server using PORT from environment variables
 server.listen(NODE_JS_PORT, '0.0.0.0', () => {
