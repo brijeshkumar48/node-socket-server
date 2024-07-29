@@ -48,6 +48,14 @@ io.on('connection', (socket) => {
     });
 });
 
+// Endpoint to handle events from Django
+app.post('/send-message', (req, res) => {
+    const data = req.body;
+    io.emit('sendMessage', data);
+    io.emit('receiveMessage', { message: data.message });
+    res.status(200).json({ message: data.message });
+});
+
 app.post('/file-upload-status', (req, res) => {
     const data = req.body;
     console.log("=====File uploaded successfully========")
